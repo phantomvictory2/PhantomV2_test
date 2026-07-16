@@ -1,0 +1,6 @@
+websockets>=11.0.3
+py-clob-client>=0.30.0
+fastapi>=0.100.0
+uvicorn>=0.23.0
+asyncpg>=0.28.0
+python-dotenv>=1.0.0

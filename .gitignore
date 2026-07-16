@@ -1,0 +1,30 @@
+# ── Secrets — NEVER commit ─────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+
+# ── Python ─────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# ── Local data / logs / scratch ───────────────────────────────────────
+logs/
+*.log
+*.db
+phantom.db
+daily_report.md
+scripts/          # local dev/ops utilities, not deployed
+
+# ── OS / editor ───────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+trade_log.json
