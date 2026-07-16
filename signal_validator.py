@@ -339,7 +339,8 @@ class SignalValidator:
         # Strategy valid TTR bounds
         valid_windows = {
             "ORBIT_A_240": (90, 240),
-            "ORBIT_A_260": (90, 260)
+            "ORBIT_A_260": (90, 260),
+            "PHANTOM_MOMENTUM_V1": (90, 260)
         }
         min_ttr, max_ttr = valid_windows.get(strategy, (90, 260))
 
@@ -518,4 +519,4 @@ class SignalValidator:
 
         db_writer = getattr(self.sp, "db_writer", None)
         if db_writer:
-            asyncio.create_task(db_writer.write("trade_log", rejection_data))
+            asyncio.create_task(

@@ -35,12 +35,12 @@ class PositionMonitor:
             "stop_loss_price": None,
             "max_hold_seconds": 90.0,
         },
-        "ORBIT_A_260": {
-            # MID MOMENTUM (per user spec): 6-8% take-profit, fixed 0.50 stop.
+        "PHANTOM_MOMENTUM_V1": {
+            # MID MOMENTUM (replaces ORBIT_A_260): 6-8% take-profit, fixed 0.50 stop.
             "take_profit_pct": 0.07,   # target 6-8% per winning trade
             "stop_loss_price": 0.50,   # fixed stop at 0.50
             "stop_loss": None,
-            "max_hold_seconds": 90.0,  # DEFAULT (not specified)
+            "max_hold_seconds": 90.0,
         },
         "LAST_SHADOW_TRADE_LITE_V4": {
             "take_profit": None,
@@ -314,7 +314,8 @@ class PositionMonitor:
                 # ORBIT_A_260: 100s - 260s elapsed -> 40 - 200 TTR remaining
                 valid_windows = {
                     "ORBIT_A_240": (20, 210),
-                    "ORBIT_A_260": (40, 200)
+                    "ORBIT_A_260": (40, 200),
+                    "PHANTOM_MOMENTUM_V1": (40, 200)
                 }
                 min_ttr, max_ttr = valid_windows.get(strategy, (20, 210))
                 
@@ -344,4 +345,4 @@ class PositionMonitor:
                 
             logger.info("Historical safeguard replay completed.")
         except Exception as e:
-            logger.error(f"Error during historical safeguard replay: {e}", exc_info=True)
+            logger.error(f"Error during historic

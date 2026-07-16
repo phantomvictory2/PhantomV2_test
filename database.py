@@ -666,7 +666,7 @@ class DatabaseManager:
                 strategies_rows = await conn.fetch("""
                     SELECT strategy_type, trades_total, wins, losses, win_rate, avg_pnl_per_trade, total_pnl, capital_weight, status
                     FROM strategy_stats
-                    WHERE strategy_type IN ('ORBIT_A_240', 'ORBIT_A_260', 'LAST_SHADOW_TRADE_LITE_V4')
+                    WHERE strategy_type IN ('ORBIT_A_240', 'PHANTOM_MOMENTUM_V1', 'LAST_SHADOW_TRADE_LITE_V4', 'PHANTOM_ONE_V1')
                 """)
                 oracles_rows = await conn.fetch("SELECT asset, avg_lag_seconds, sample_size, status FROM asset_lag_stats")
                 
@@ -726,7 +726,7 @@ class DatabaseManager:
 
             # Strategies — keys must match frontend fetchState() s.strategy_type / s.trades_total
             strategies = []
-            registered_strats = {"ORBIT_A_240", "ORBIT_A_260", "LAST_SHADOW_TRADE_LITE_V4"}
+            registered_strats = {"ORBIT_A_240", "PHANTOM_MOMENTUM_V1", "LAST_SHADOW_TRADE_LITE_V4", "PHANTOM_ONE_V1"}
             for r in strategy_rows:
                 strategies.append({
                     "strategy_type": r["strategy_type"],
@@ -1154,4 +1154,4 @@ class DatabaseManager:
         WHERE id = $3
         """
         async with self.pool.acquire(timeout=5.0) as conn:
-            await conn.execute(query, blocked, confidence, uuid.UUID(pos_id))
+            await conn.exec

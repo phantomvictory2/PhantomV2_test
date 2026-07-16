@@ -3,7 +3,11 @@ import asyncio
 import time
 from typing import Dict, Any
 
-from strategies import classify_last_shadow_trade_lite_v4
+from strategies import (
+    classify_last_shadow_trade_lite_v4,
+    classify_orbit_a_240,
+    classify_phantom_momentum_v1,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -13,9 +17,12 @@ class SignalEngine:
         self.risk_engine_callback = risk_engine_callback
         self.db_callback = db_callback
         self.poly_feed = poly_feed
-        # Production v1: Last Shadow only. ORBIT strategies removed (unproven/losing).
+        # Last Shadow (self-contained) + signal-driven strategies:
+        # ORBIT_A_240 restored; PHANTOM_MOMENTUM_V1 replaces ORBIT_A_260.
         self.strategy_enabled = {
-            "LAST_SHADOW_TRADE_LITE_V4": True
+            "LAST_SHADOW_TRADE_LITE_V4": True,
+            "ORBIT_A_240": True,
+            "PHANTOM_MOMENTUM_V1": True,
         }
         self._last_scan_log: Dict[str, float] = {}  # asset → last log time
         self._last_signal_time: Dict[str, float] = {}  # "asset:strategy" → last Grade-A fire time
@@ -29,6 +36,10 @@ class SignalEngine:
         signals = []
         if self.strategy_enabled.get("LAST_SHADOW_TRADE_LITE_V4", True):
             signals.append(classify_last_shadow_trade_lite_v4(poly_state))
+        if self.strategy_enabled.get("ORBIT_A_240", True):
+            signals.append(classify_orbit_a_240(poly_state))
+        if self.strategy_enabled.get("PHANTOM_MOMENTUM_V1", True):
+            signals.append(classify_phantom_momentum_v1(poly_state))
             
         # Throttled scan diagnostic — logs once per 30s per asset so the system is visibly alive
         now = time.time()
@@ -89,11 +100,4 @@ class SignalEngine:
                 if self.risk_engine_callback:
                     if asyncio.iscoroutinefunction(self.risk_engine_callback):
                         task = asyncio.create_task(self.risk_engine_callback(winning_sig))
-                        def _log_risk_exc(t):
-                            try:
-                                t.result()
-                            except Exception as e:
-                                logger.error(f"Exception in risk_engine_callback for {winning_sig.get('asset')}: {e}", exc_info=True)
-                        task.add_done_callback(_log_risk_exc)
-                    else:
-                        self.risk_engine_callback(winning_sig)
+ 

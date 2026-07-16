@@ -232,6 +232,8 @@ async def main():
     # ORBIT strategies are retired (removed from signal_engine) — only validate live ones.
     _STRATEGY_TTR_CEILINGS = {
         "LAST_SHADOW_TRADE_LITE_V4": 15,
+        "ORBIT_A_240": 210,
+        "PHANTOM_MOMENTUM_V1": 200,
     }
     for _strat, _expected_max in _STRATEGY_TTR_CEILINGS.items():
         _re_window = risk_engine.VALID_TTR_WINDOWS.get(_strat)
@@ -656,4 +658,4 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        logger.info("Phantom V2 shutting down via KeyboardInterrupt.")
+       

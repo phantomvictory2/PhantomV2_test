@@ -12,7 +12,8 @@ class RiskEngine:
     VALID_TTR_WINDOWS: Dict[str, tuple] = {
         "LATENCY_ARB":              (5,  295),
         "ORBIT_A_240":              (20, 210),  # TTR remaining (90s - 280s elapsed)
-        "ORBIT_A_260":              (40, 200),  # TTR remaining (100s - 260s elapsed)
+        "ORBIT_A_260":              (40, 200),  # retired — replaced by PHANTOM_MOMENTUM_V1
+        "PHANTOM_MOMENTUM_V1":      (40, 200),  # TTR remaining (100s - 260s elapsed)
         "LAST_SHADOW_TRADE_LITE":   (5,  295),
         "LAST_SHADOW_TRADE_LITE_V4":(5,   15),
     }
@@ -124,7 +125,7 @@ class RiskEngine:
             return {"status": "REJECTED", "reason": "Insufficient liquidity (<$500)"}
 
         # ── CHECK 4: Oracle lag (ORBIT strategies only) ───────────────────────
-        if strat in ["LATENCY_ARB", "ORBIT_A_240", "ORBIT_A_260"]:
+        if strat in ["LATENCY_ARB", "ORBIT_A_240", "ORBIT_A_260", "PHANTOM_MOMENTUM_V1"]:
             lag_stats = (
                 sp.get_asset_lag_stats(signal["asset"])
                 if sp
@@ -192,7 +193,7 @@ class RiskEngine:
             return {"status": "REJECTED", "reason": "Oracle staleness > 90s — feed likely dead"}
 
         # ── CHECK 7: Position sizing & approval ───────────────────────────────
-        if strat in ("ORBIT_A_240", "ORBIT_A_260"):
+        if strat in ("ORBIT_A_240", "ORBIT_A_260", "PHANTOM_MOMENTUM_V1"):
             size_usdc = 30.0
             signal["entry_mode"] = "SINGLE"
         else:
@@ -212,7 +213,4 @@ class RiskEngine:
 
         if signal.get("entry_mode") == "DCA" and signal.get("dca_config"):
             rounds = signal["dca_config"]["rounds"]
-            signal["dca_config"]["per_round_usdc"] = round(size_usdc / rounds, 4)
-
-        signal["approved_size_usdc"] = round(size_usdc, 4)
-        return {"status": "APPROVED", "signal": signal}
+            signal["dca_config"]["per_round_usdc"] = round
