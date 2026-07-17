@@ -213,4 +213,7 @@ class RiskEngine:
 
         if signal.get("entry_mode") == "DCA" and signal.get("dca_config"):
             rounds = signal["dca_config"]["rounds"]
-            signal["dca_config"]["per_round_usdc"] = round
+            signal["dca_config"]["per_round_usdc"] = round(size_usdc / rounds, 4)
+
+        signal["approved_size_usdc"] = round(size_usdc, 4)
+        return {"status": "APPROVED", "signal": signal}

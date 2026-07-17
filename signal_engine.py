@@ -100,4 +100,11 @@ class SignalEngine:
                 if self.risk_engine_callback:
                     if asyncio.iscoroutinefunction(self.risk_engine_callback):
                         task = asyncio.create_task(self.risk_engine_callback(winning_sig))
- 
+                        def _log_risk_exc(t):
+                            try:
+                                t.result()
+                            except Exception as e:
+                                logger.error(f"Exception in risk_engine_callback for {winning_sig.get('asset')}: {e}", exc_info=True)
+                        task.add_done_callback(_log_risk_exc)
+                    else:
+                        self.risk_engine_callback(winning_sig)

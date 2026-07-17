@@ -1154,4 +1154,4 @@ class DatabaseManager:
         WHERE id = $3
         """
         async with self.pool.acquire(timeout=5.0) as conn:
-            await conn.exec
+            await conn.execute(query, blocked, confidence, uuid.UUID(pos_id))

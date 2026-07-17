@@ -519,4 +519,4 @@ class SignalValidator:
 
         db_writer = getattr(self.sp, "db_writer", None)
         if db_writer:
-            asyncio.create_task(
+            asyncio.create_task(db_writer.write("trade_log", rejection_data))

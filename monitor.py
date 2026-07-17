@@ -345,4 +345,4 @@ class PositionMonitor:
                 
             logger.info("Historical safeguard replay completed.")
         except Exception as e:
-            logger.error(f"Error during historic
+            logger.error(f"Error during historical safeguard replay: {e}", exc_info=True)

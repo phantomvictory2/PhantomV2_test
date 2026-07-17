@@ -1925,4 +1925,8 @@ setInterval(updateClocks, 1000);
             import logging
             logger = logging.getLogger("Dashboard")
             logger.error(f"Error fetching deep analytics: {e}")
-     
+            return JSONResponse(content=[])
+
+    return app
+
+create_app()
