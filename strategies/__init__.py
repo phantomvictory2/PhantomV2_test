@@ -3,6 +3,7 @@ from .last_shadow_trade_lite_v4 import last_shadow_driver, last_shadow_settlemen
 from .phantom_one_v1 import phantom_one_driver, phantom_one_settlement_sweep
 from .orbit_a_240 import classify as classify_orbit_a_240
 from .phantom_momentum_v1 import classify as classify_phantom_momentum_v1
+from .orbit_a_240_v2 import orbit_v2_driver
 
 __all__ = [
     "classify_last_shadow_trade_lite_v4",
@@ -12,4 +13,5 @@ __all__ = [
     "phantom_one_settlement_sweep",
     "classify_orbit_a_240",
     "classify_phantom_momentum_v1",
+    "orbit_v2_driver",
 ]

@@ -20,6 +20,7 @@ from strategies import (
     last_shadow_settlement_sweep,
     phantom_one_driver,
     phantom_one_settlement_sweep,
+    orbit_v2_driver,
 )
 from spot_feed import SpotFeed
 from telegram import TelegramBot
@@ -641,6 +642,7 @@ async def main():
         last_shadow_settlement_sweep(),
         phantom_one_driver(),
         phantom_one_settlement_sweep(),
+        orbit_v2_driver(),
         spot_feed.run(),
         server.serve(),
     ]

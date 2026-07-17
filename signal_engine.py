@@ -21,7 +21,7 @@ class SignalEngine:
         # ORBIT_A_240 restored; PHANTOM_MOMENTUM_V1 replaces ORBIT_A_260.
         self.strategy_enabled = {
             "LAST_SHADOW_TRADE_LITE_V4": True,
-            "ORBIT_A_240": True,
+            "ORBIT_A_240": False,   # disabled: -$499 over 825 paper trades (55.6% WR vs 63% breakeven)
             "PHANTOM_MOMENTUM_V1": True,
         }
         self._last_scan_log: Dict[str, float] = {}  # asset → last log time

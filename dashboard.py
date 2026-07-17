@@ -1092,7 +1092,7 @@ async function fetchState() {
         // Strategy chart + table
         const strats = d.strategies || [];
         if (strats.length > 0) {
-            const labels = strats.map(s => s.strategy_type.replace('ORBIT_A_','OA').replace('LAST_SHADOW_TRADE_LITE_V4','LST-V4').replace('PHANTOM_MOMENTUM_V1','PH-MOMO').replace('PHANTOM_ONE_V1','PH-1'));
+            const labels = strats.map(s => s.strategy_type.replace('ORBIT_A_','OA').replace('LAST_SHADOW_TRADE_LITE_V4','LST-V4').replace('PHANTOM_MOMENTUM_V1','PH-MOMO').replace('ORBIT_A_240_V2','OA240-V2').replace('PHANTOM_ONE_V1','PH-1'));
             const winRates = strats.map(s => (s.win_rate || 0) * 100);
             initStrategyBarChart(labels, winRates);
             const sb = document.querySelector('#tbl-strat-mini tbody');
