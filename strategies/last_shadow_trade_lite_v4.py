@@ -43,7 +43,10 @@ CONFIG = {
 # ── Bounded per-market state, keyed by market_id ─────────────────────────────
 WINDOW_STATE: dict = {}
 _MAX_TRACKED_MARKETS = 18          # 3 assets × several in-flight/resolving markets
-_ASSETS = ("BTC", "ETH", "SOL")
+# SOL excluded by default: thin book + frequent last-second reversals make it
+# structurally -EV for a penny-carry strategy (one -$50 reversal erases ~100 SOL
+# wins). Re-enable via LS_ASSETS=BTC,ETH,SOL once the reversal_log data justifies it.
+_ASSETS = tuple(a.strip().upper() for a in os.getenv("LS_ASSETS", "BTC,ETH").split(",") if a.strip())
 _current_market_id: dict = {}      # asset -> current market_id
 
 
@@ -752,10 +755,28 @@ async def _drive_asset(asset: str, feed):
             # you set it from real execution_journal slippage data. Note: this only blocks
             # *thin-reward* entries; it does not fix a strategy whose loss RATE is too high.
             min_edge = float(os.getenv("MIN_EDGE_BUFFER", "0.0"))
+            # Displacement gate: a 0.99 favorite is only trustworthy when spot has
+            # actually displaced from the window open. A flat window (|disp| < gate)
+            # is a coin flip being priced like 99/2 - that subset carries nearly all
+            # of Last Shadow's -$50 reversals. Skip flat windows; also skip when the
+            # spot feed can't tell us (conservative: no reading = no trade).
+            min_disp_bp = float(os.getenv("LS_MIN_DISPLACEMENT_BP", "3.0"))
+            disp_pct = None
+            _sf = getattr(state_provider, "spot_feed", None)
+            if _sf is not None:
+                _m = _sf.get_margin(asset)
+                if _m is not None:
+                    disp_pct = _m["margin_pct"]
             if winning < CONFIG["min_price_threshold"]:
                 state["skipped_reason"] = "price_below_threshold"
             elif (1.0 - winning) < min_edge:
                 state["skipped_reason"] = "thin_edge_ev_gate"
+            elif disp_pct is None:
+                state["skipped_reason"] = "no_spot_margin"
+            elif abs(disp_pct) < min_disp_bp / 100.0:
+                state["skipped_reason"] = "flat_displacement"
+            elif ((disp_pct > 0) != (yp >= np_)):
+                state["skipped_reason"] = "spot_book_disagree"
             else:
                 state["signal_valid"] = True
                 if yp >= np_:

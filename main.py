@@ -23,6 +23,7 @@ from strategies import (
     orbit_v2_driver,
 )
 from spot_feed import SpotFeed
+from reversal_logger import reversal_logger_task
 from telegram import TelegramBot
 from dashboard import app, state_provider
 from database import DatabaseManager
@@ -643,6 +644,7 @@ async def main():
         phantom_one_driver(),
         phantom_one_settlement_sweep(),
         orbit_v2_driver(),
+        reversal_logger_task(),
         spot_feed.run(),
         server.serve(),
     ]
